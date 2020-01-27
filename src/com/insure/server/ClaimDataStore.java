@@ -6,17 +6,22 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @WebService
 public class ClaimDataStore {
-    AtomicInteger uuid=new AtomicInteger();
-    ConcurrentHashMap<Integer,Claim> dataStore;
+    AtomicInteger uuidTracker;
+    ConcurrentHashMap<Integer, Claim> dataStore;
 
     public ClaimDataStore() {
-        uuid=new AtomicInteger(1);
-        dataStore=new ConcurrentHashMap<>();
+        uuidTracker = new AtomicInteger(1);
+        dataStore = new ConcurrentHashMap<Integer, Claim>();
     }
 
-    public void createClaim(String description){
-        Claim claim=new Claim(uuid.intValue(), description);
-        dataStore.put(uuid.intValue(),claim);
+    public int createClaim(String description){
+
+        int uuid = uuidTracker.getAndIncrement();
+
+        Claim claim = new Claim(uuid, description);
+        dataStore.put(uuid, claim);
+
+        return uuid;
     }
 
     public Claim retrieveClaim(int id){
@@ -24,10 +29,6 @@ public class ClaimDataStore {
     }
 
     public void updateClaim(int id, String newDescription){
-        dataStore.replace(uuid.intValue(),dataStore.get(uuid),new Claim(uuid.intValue(),newDescription));
-    }
-
-    public String checkIfWorking(){
-        return "Is working you dumbass!";
+        dataStore.replace(id, dataStore.get(id), new Claim(id, newDescription));
     }
 }
