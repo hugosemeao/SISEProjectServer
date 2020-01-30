@@ -8,5 +8,7 @@ public class Main {
         ClaimDataStore claim = new ClaimDataStore();
 
         Endpoint.publish("http://localhost:8090/docstorage", claim);
+
+
     }
 }
