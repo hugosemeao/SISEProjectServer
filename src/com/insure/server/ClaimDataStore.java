@@ -11,27 +11,17 @@ public class ClaimDataStore {
     AtomicInteger uuidTracker;
     ConcurrentHashMap<Integer, Claim> dataStore;
 
-    AtomicInteger clients = new AtomicInteger(0); //stores next uuid of clients
-    AtomicInteger officers = new AtomicInteger(0); //stores next uuid of insure officers
-
-    public int connectClient(){
-        return clients.getAndIncrement();
-    }
-
-    public int connectOfficer(){
-        return officers.getAndIncrement();
-    }
 
     public ClaimDataStore() {
         uuidTracker = new AtomicInteger(1);
         dataStore = new ConcurrentHashMap<Integer, Claim>();
     }
 
-    public int createClaim(String description){
+    public int createClaim(String description,int clientID){
 
         int uuid = uuidTracker.getAndIncrement();
 
-        Claim claim = new Claim(uuid, description);
+        Claim claim = new Claim(uuid, description, clientID);
         dataStore.put(uuid, claim);
 
         return uuid;
@@ -41,11 +31,11 @@ public class ClaimDataStore {
         return dataStore.get(id);
     }
 
-    public void updateClaim(int id, String newDescription){
-        dataStore.replace(id, dataStore.get(id), new Claim(id, newDescription));
+    public void updateClaim(int id, String newDescription, int clientID){
+        dataStore.replace(id, dataStore.get(id), new Claim(id, newDescription, clientID));
     }
 
     public void addDocument(int uuid, String docContent){
-
+        retrieveClaim(uuid).addDocument(docContent);
     }
 }
