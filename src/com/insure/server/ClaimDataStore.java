@@ -11,12 +11,13 @@ public class ClaimDataStore {
     AtomicInteger uuidTracker;
     ConcurrentHashMap<Integer, Claim> dataStore;
 
-
+    //Constructor of connection handler
     public ClaimDataStore() {
         uuidTracker = new AtomicInteger(1);
         dataStore = new ConcurrentHashMap<Integer, Claim>();
     }
 
+    //create claim
     public int createClaim(String description,int clientID){
 
         int uuid = uuidTracker.getAndIncrement();
@@ -35,6 +36,7 @@ public class ClaimDataStore {
         dataStore.replace(id, dataStore.get(id), new Claim(id, newDescription, clientID));
     }
 
+    // add document to claim
     public void addDocument(int uuid, String docContent){
         retrieveClaim(uuid).addDocument(docContent);
     }

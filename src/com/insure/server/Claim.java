@@ -5,11 +5,11 @@ import java.util.HashSet;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Claim {
-    private final int uuid;
-    private String description;
-    private HashMap<Integer, String> docStore;
-    private AtomicInteger docId;
-    private final int idClient;
+    private final int uuid; //claim identifier
+    private String description; //claim description
+    private HashMap<Integer, String> docStore; //claim documents storage
+    private AtomicInteger docId; //claim id tracker
+    private final int idClient; //claim owner id
 
 
     public Claim(int id, String description, int idClient){

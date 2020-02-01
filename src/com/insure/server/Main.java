@@ -9,6 +9,5 @@ public class Main {
 
         Endpoint.publish("http://localhost:8090/docstorage", claim);
 
-
     }
 }
