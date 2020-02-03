@@ -1,7 +1,5 @@
 package com.insure.server;
 
-import com.sun.xml.ws.transport.tcp.connectioncache.spi.concurrent.ConcurrentQueue;
-
 import javax.jws.WebService;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -18,9 +16,12 @@ public class ClaimDataStore {
     }
 
     //create claim
-    public int createClaim(String description,int clientID){
+    public int createClaim(String client, String description){
 
         int uuid = uuidTracker.getAndIncrement();
+
+        //temporary!!
+        int clientID =  Integer.parseInt(client.substring(7));
 
         Claim claim = new Claim(uuid, description, clientID);
         dataStore.put(uuid, claim);
@@ -28,16 +29,34 @@ public class ClaimDataStore {
         return uuid;
     }
 
-    public Claim retrieveClaim(int id){
-        return dataStore.get(id);
-    }
-
-    public void updateClaim(int id, String newDescription, int clientID){
-        dataStore.replace(id, dataStore.get(id), new Claim(id, newDescription, clientID));
+    //retrieve claim information
+    public String claimToString(String client, int claimID){
+        return retrieveClaim(claimID).toString();
     }
 
     // add document to claim
-    public void addDocument(int uuid, String docContent){
-        retrieveClaim(uuid).addDocument(docContent);
+    public int addDocument(String client, int claimID, String docContent){
+        return retrieveClaim(claimID).addDocument(docContent);
+    }
+
+    public String listDocuments(String client, int claimID){
+        return retrieveClaim(claimID).documentKeys().toString();
+    }
+
+    public String viewDocument(String client, int claimID, int docID){
+        return retrieveClaim(claimID).getDocumentContent(docID);
+    }
+
+    private Claim retrieveClaim(int id){
+        return dataStore.get(id);
+    }
+
+    public void updateDocument(String clientID, int ClaimID, int documentID, String newContent){
+        dataStore.get(ClaimID).editDocument(documentID, newContent);
+    }
+
+
+    public void updateClaim(int id, String newDescription, int clientID){
+        dataStore.replace(id, dataStore.get(id), new Claim(id, newDescription, clientID));
     }
 }

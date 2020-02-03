@@ -7,7 +7,8 @@ public class Main {
 
         ClaimDataStore claim = new ClaimDataStore();
 
-        Endpoint.publish("http://localhost:8090/docstorage", claim);
+        Endpoint.publish("http://146.193.7.121:8090/docstorage", claim);
 
+        System.out.println("Server is running...");
     }
 }
