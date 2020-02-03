@@ -1,6 +1,10 @@
 package com.insure.server;
 
+import com.insure.server.security.DecryptPub;
+
+import javax.crypto.NoSuchPaddingException;
 import javax.jws.WebService;
+import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -16,7 +20,15 @@ public class ClaimDataStore {
     }
 
     //create claim
-    public int createClaim(String client, String description){
+    public int createClaim(String client, String encryptedDescription) throws Exception {
+
+        if(!client.substring(0,7).contentEquals("insured")){
+            throw new Exception("Only a insured can create a claim.");
+        }
+
+        System.out.println("Encrypted: " + encryptedDescription);
+        String description = (new DecryptPub(client, encryptedDescription)).getDecryptedMsg();
+        System.out.println("Message: " + description);
 
         int uuid = uuidTracker.getAndIncrement();
 

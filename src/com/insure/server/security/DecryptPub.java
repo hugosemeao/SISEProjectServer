@@ -14,11 +14,15 @@ import java.util.Base64;
 import java.util.Scanner;
 
 
-public class AsymDecryptPub {
+public class DecryptPub {
     private Cipher cipher;
+    private String key;
+    private String encyptedMsg;
 
-    public AsymDecryptPub() throws NoSuchAlgorithmException, NoSuchPaddingException {
+    public DecryptPub(String key, String encyptedMsg) throws NoSuchAlgorithmException, NoSuchPaddingException {
         this.cipher = Cipher.getInstance("RSA");
+        this.key = key;
+        this.encyptedMsg = encyptedMsg;
     }
 
 
@@ -40,7 +44,7 @@ public class AsymDecryptPub {
 
     public static void main(String[] args) throws Exception {
         //start the encryption framework
-        AsymDecryptPub ad = new AsymDecryptPub();
+        DecryptPub ad = new DecryptPub("ok", "ok");
 
         //load public key file
         System.out.print("insert the path to the public keyfile (ex. 'keys\\user1PublicKey'): ");
@@ -60,6 +64,12 @@ public class AsymDecryptPub {
         System.out.println("\nEncrypted Message: " + encrypted_msg +
                 "\nDecrypted Message: " + decrypted_msg);
 
-
     }
+
+    public String getDecryptedMsg() throws Exception {
+        PublicKey prvKey = this.getPublic(Paths.get("").toAbsolutePath() +
+                System.getProperty("file.separator") + "keys/Public" + System.getProperty("file.separator") + this.key + System.getProperty("file.separator") + this.key + "PublicKey");
+        return  this.decryptText(this.encyptedMsg, prvKey);
+    }
+
 }
