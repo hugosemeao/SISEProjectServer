@@ -17,12 +17,12 @@ import java.util.Scanner;
 public class DecryptPub {
     private Cipher cipher;
     private String key;
-    private String encyptedMsg;
+    private String encryptedMsg;
 
-    public DecryptPub(String key, String encyptedMsg) throws NoSuchAlgorithmException, NoSuchPaddingException {
+    public DecryptPub(String key, String encryptedMsg) throws NoSuchAlgorithmException, NoSuchPaddingException {
         this.cipher = Cipher.getInstance("RSA");
         this.key = key;
-        this.encyptedMsg = encyptedMsg;
+        this.encryptedMsg = encryptedMsg;
     }
 
 
@@ -41,35 +41,14 @@ public class DecryptPub {
         return new String(cipher.doFinal(Base64.getDecoder().decode(msg)), "UTF-8");
     }
 
-
-    public static void main(String[] args) throws Exception {
-        //start the encryption framework
-        DecryptPub ad = new DecryptPub("ok", "ok");
-
-        //load public key file
-        System.out.print("insert the path to the public keyfile (ex. 'keys\\user1PublicKey'): ");
-        Scanner path = new Scanner(System.in);
-        String keyfile = path.nextLine();
-
-        PublicKey publicKey = ad.getPublic(Paths.get("").toAbsolutePath() + System.getProperty("file.separator") + keyfile);
-
-        //read encrypted message from the command line
-        System.out.print("Encrypted Message: ");
-        Scanner in = new Scanner(System.in);
-        String encrypted_msg = in.nextLine();
-
-        //decrypt message
-        String decrypted_msg = ad.decryptText(encrypted_msg, publicKey);
-
-        System.out.println("\nEncrypted Message: " + encrypted_msg +
-                "\nDecrypted Message: " + decrypted_msg);
-
-    }
-
     public String getDecryptedMsg() throws Exception {
         PublicKey prvKey = this.getPublic(Paths.get("").toAbsolutePath() +
                 System.getProperty("file.separator") + "keys/Public" + System.getProperty("file.separator") + this.key + System.getProperty("file.separator") + this.key + "PublicKey");
-        return  this.decryptText(this.encyptedMsg, prvKey);
+        return  this.decryptText(this.encryptedMsg, prvKey);
+    }
+
+    public static String decryptMsg(String key, String msg) throws Exception{
+        return (new DecryptPub(key, msg)).getDecryptedMsg();
     }
 
 }

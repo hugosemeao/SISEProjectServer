@@ -14,11 +14,15 @@ import java.util.Base64;
 import java.util.Scanner;
 
 
-public class AsymEncryptPub {
+public class EncryptPub {
     private Cipher cipher;
+    private String message;
+    private String key;
 
-    public AsymEncryptPub() throws NoSuchAlgorithmException, NoSuchPaddingException {
+    public EncryptPub(String key, String message) throws NoSuchAlgorithmException, NoSuchPaddingException {
         this.cipher = Cipher.getInstance("RSA");
+        this.key = key;
+        this.message = message;
     }
 
 
@@ -38,28 +42,14 @@ public class AsymEncryptPub {
         return Base64.getEncoder().encodeToString(cipher.doFinal(msg.getBytes("UTF-8")));
     }
 
-
-    public static void main(String[] args) throws Exception {
-        //start the encryption framework
-        AsymEncryptPub ac = new AsymEncryptPub();
-
-        // load the public key
-        System.out.print("insert the path to the public keyfile (ex. 'keys\\user1PublicKey'): ");
-        Scanner path = new Scanner(System.in);
-        String keyfile = path.nextLine();
-        PublicKey publicKey = ac.getPublic(Paths.get("").toAbsolutePath() + System.getProperty("file.separator") + keyfile);
-
-        //read message from the command line
-        System.out.print("Message: ");
-        Scanner in = new Scanner(System.in);
-        String msg = in.nextLine();
-
-        //encrypt the message
-        String encrypted_msg = ac.encryptText(msg, publicKey);
-
-        System.out.println("Original Message: " + msg +
-                "\nEncrypted Message: " + encrypted_msg);
-
-
+    public String getDecryptedMsg() throws Exception {
+        PublicKey prvKey = this.getPublic(Paths.get("").toAbsolutePath() +
+                System.getProperty("file.separator") + "keys/Public" + System.getProperty("file.separator") + this.key + System.getProperty("file.separator") + this.key + "PublicKey");
+        return  this.encryptText(this.message, prvKey);
     }
+
+    public static String decryptMsg(String key, String msg) throws Exception{
+        return (new DecryptPub(key, msg)).getDecryptedMsg();
+    }
+
 }

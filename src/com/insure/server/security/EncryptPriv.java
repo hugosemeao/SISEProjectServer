@@ -14,11 +14,13 @@ import java.util.Base64;
 import java.util.Scanner;
 
 
-public class AsymEncryptPriv {
+public class EncryptPriv {
     private Cipher cipher;
+    private String message;
 
-    public AsymEncryptPriv() throws NoSuchAlgorithmException, NoSuchPaddingException {
+    public EncryptPriv(String message) throws NoSuchAlgorithmException, NoSuchPaddingException {
         this.cipher = Cipher.getInstance("RSA");
+        this.message = message;
     }
 
 
@@ -39,28 +41,14 @@ public class AsymEncryptPriv {
         return Base64.getEncoder().encodeToString(cipher.doFinal(msg.getBytes("UTF-8")));
     }
 
-
-    public static void main(String[] args) throws Exception {
-        //start the encryption framework
-        AsymEncryptPriv ac = new AsymEncryptPriv();
-
-        // load the private key
-        System.out.print("insert the path to the private keyfile (ex. 'keys\\user1PrivateKey') :");
-        Scanner path = new Scanner(System.in);
-        String keyfile = path.nextLine();
-        PrivateKey privateKey = ac.getPrivate(Paths.get("").toAbsolutePath() + System.getProperty("file.separator") + keyfile);
-
-        //read message from the command line
-        System.out.print("Message: ");
-        Scanner in = new Scanner(System.in);
-        String msg = in.nextLine();
-
-        //encrypt the message
-        String encrypted_msg = ac.encryptText(msg, privateKey);
-
-        System.out.println("Original Message: " + msg +
-                "\nEncrypted Message: " + encrypted_msg);
-
-
+    public String getDecryptedMsg() throws Exception {
+        PrivateKey prvKey = this.getPrivate(Paths.get("").toAbsolutePath() +
+                System.getProperty("file.separator") + "keys/Private/serverPrivateKey");
+        return  this.encryptText(this.message, prvKey);
     }
+
+    public static String decryptMsg(String key, String msg) throws Exception{
+        return (new DecryptPub(key, msg)).getDecryptedMsg();
+    }
+
 }
