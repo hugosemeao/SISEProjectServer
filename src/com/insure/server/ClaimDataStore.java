@@ -51,12 +51,14 @@ public class ClaimDataStore {
         return dataStore.get(id);
     }
 
-    public void updateDocument(String clientID, int ClaimID, int documentID, String newContent){
+    public void editDocument(String clientID, int ClaimID, int documentID, String newContent){
         dataStore.get(ClaimID).editDocument(documentID, newContent);
     }
 
-
+    /*
     public void updateClaim(int id, String newDescription, int clientID){
         dataStore.replace(id, dataStore.get(id), new Claim(id, newDescription, clientID));
     }
+    */
+
 }
