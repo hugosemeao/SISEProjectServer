@@ -1,14 +1,13 @@
 package com.insure.server;
 
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Claim {
     private final int uuid; //claim identifier
     private String description; //claim description
-    private HashMap<Integer, Document> docStore; //documents of this claim
+    private ConcurrentHashMap<Integer, Document> docStore; //documents of this claim
     private AtomicInteger docId; //claim id tracker
     private final int idClient; //claim owner id
 
@@ -16,10 +15,11 @@ public class Claim {
     public Claim(int id, String description, int idClient){
         this.description= description;
         this.uuid=id;
-        docStore= new HashMap<>();
+        docStore= new ConcurrentHashMap<>();
         this.idClient=idClient;
     }
 
+    @Override
     public String toString(){
         return "Claim ID :"+uuid+"\n Description:  "+ description;
     }
