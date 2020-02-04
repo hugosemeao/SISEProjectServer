@@ -3,8 +3,10 @@ package com.insure.server;
 import com.insure.server.security.DecryptPriv;
 import com.insure.server.security.DecryptPub;
 import com.insure.server.security.VerifySignature;
+import com.sun.xml.registry.uddi.bindings_v2_2.DeleteService;
 
 import javax.jws.WebService;
+import java.security.PublicKey;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -39,21 +41,23 @@ public class ClaimDataStore {
     }
 
     //retrieve claim information
-    public String claimToString(String client, int claimID){
-        //Decrypt claimId
-        //check if client is owner of claimId or if client is officer
-        //ToDo
-
-        //retrieveClaim(claimID).getIdClient().contentEquals(client) || client.substring(0, 8).contentEquals("officer");
-       //otherwise send exception
-
+    public String claimToString(String client, int claimID) throws Exception {
+        DecryptPriv.decryptMsg(claimToString(client, claimID));    //Decrypt claimId
+        try {
+            if (retrieveClaim(claimID).getIdClient().contentEquals(client) || client.substring(0, 8).contentEquals("officer")); //check if client is owner of claimId or if client is office
+        } catch (Exception e) {
+            System.out.println("not officer or client");
+        }
         return retrieveClaim(claimID).toString();
     }
 
     // add document to claim
-    public int addDocument(String client, int claimID, String docContent){
+    public int addDocument(String client, int claimID, String docContent) throws Exception {
         //Check Sigature (see createClaim)
         //ToDo
+        if(!VerifySignature.checkSignature("client")) {   // how do i fockin do dis
+            throw new Exception("The claim signature is not valid.");
+        }
         return retrieveClaim(claimID).addDocument(docContent);
     }
 
