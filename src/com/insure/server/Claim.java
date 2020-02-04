@@ -9,14 +9,14 @@ public class Claim {
     private String description; //claim description
     private ConcurrentHashMap<Integer, Document> docStore; //documents of this claim
     private AtomicInteger docId; //claim id tracker
-    private final int idClient; //claim owner id
+    private final String idClient; //claim owner id
 
 
-    public Claim(int id, String description, int idClient){
+    public Claim(int id, String description, String idClient){
         this.description= description;
         this.uuid=id;
         docStore= new ConcurrentHashMap<>();
-        this.idClient=idClient;
+        this.idClient = idClient;
     }
 
     @Override
@@ -44,5 +44,8 @@ public class Claim {
         docStore.get(docID).editDocument(newContent);
     }
 
+    public String getIdClient(){
+        return this.idClient;
+    }
 
 }
