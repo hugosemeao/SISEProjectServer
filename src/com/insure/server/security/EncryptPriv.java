@@ -47,7 +47,7 @@ public class EncryptPriv {
         return  this.encryptText(this.message, prvKey);
     }
 
-    public static String decryptMsg(String key, String msg) throws Exception{
+    public static String encryptMsg(String key, String msg) throws Exception{
         return (new DecryptPub(key, msg)).getDecryptedMsg();
     }
 

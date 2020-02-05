@@ -11,7 +11,6 @@ import java.nio.file.Paths;
 import java.security.*;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
-import java.util.Scanner;
 
 
 public class EncryptPub {
@@ -42,14 +41,14 @@ public class EncryptPub {
         return Base64.getEncoder().encodeToString(cipher.doFinal(msg.getBytes("UTF-8")));
     }
 
-    public String getDecryptedMsg() throws Exception {
+    public String getEncryptedMsg() throws Exception {
         PublicKey prvKey = this.getPublic(Paths.get("").toAbsolutePath() +
                 System.getProperty("file.separator") + "keys/Public" + System.getProperty("file.separator") + this.key + System.getProperty("file.separator") + this.key + "PublicKey");
         return  this.encryptText(this.message, prvKey);
     }
 
-    public static String decryptMsg(String key, String msg) throws Exception{
-        return (new DecryptPub(key, msg)).getDecryptedMsg();
+    public static String encryptMsg(String key, String msg) throws Exception{
+        return (new EncryptPub(key, msg)).getEncryptedMsg();
     }
 
 }

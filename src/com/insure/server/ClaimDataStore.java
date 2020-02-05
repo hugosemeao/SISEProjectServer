@@ -2,6 +2,7 @@ package com.insure.server;
 
 import com.insure.server.security.DecryptPriv;
 import com.insure.server.security.DecryptPub;
+import com.insure.server.security.EncryptPub;
 import com.insure.server.security.VerifySignature;
 import javax.jws.WebService;
 import java.util.concurrent.ConcurrentHashMap;
@@ -48,7 +49,7 @@ public class ClaimDataStore {
         }
 
         //check if client is owner of claimId or if client is office
-        if (!retrieveClaim(id).getIdClient().contentEquals(client) && !client.substring(0, 8).contentEquals("officer")){
+        if (!retrieveClaim(id).getIdClient().contentEquals(client) && !client.substring(0, 7).contentEquals("officer")){
             throw new ClientException("Client does not own this claim.");
         }
 
@@ -62,7 +63,7 @@ public class ClaimDataStore {
             throw new ClientException("Cliam does no exist.");
         }
 
-        String originalMsg = DecryptPriv.decryptMsg(encryptedMsg);
+        String originalMsg = DecryptPub.decryptMsg(client, encryptedMsg);
         if(!VerifySignature.checkSignature(client, originalMsg, signature)) {
             throw new Exception("The claim signature is not valid.");
         }
@@ -72,7 +73,7 @@ public class ClaimDataStore {
 
     public String listDocuments(String client, String encryptedClaimID) throws Exception {
         //Decrypt claimId
-        int claimID = Integer.getInteger(DecryptPub.decryptMsg(client, encryptedClaimID));
+        int claimID = Integer.parseInt(DecryptPub.decryptMsg(client, encryptedClaimID));
 
         //check if claim exists
         if (!dataStore.containsKey(claimID)) {
@@ -80,7 +81,7 @@ public class ClaimDataStore {
         }
 
         //check if client is owner of claimId or if client is office
-        if (!retrieveClaim(claimID).getIdClient().contentEquals(client) && !client.substring(0, 8).contentEquals("officer")){
+        if (!retrieveClaim(claimID).getIdClient().contentEquals(client) && !client.substring(0, 7).contentEquals("officer")){
             throw new ClientException("Client does not own this claim.");
         }
 
@@ -89,7 +90,7 @@ public class ClaimDataStore {
 
     public String[] viewDocument(String client, String encryptedClaimID, int docID) throws Exception {
         //Decrypt claimId
-        int claimID = Integer.getInteger(DecryptPub.decryptMsg(client, encryptedClaimID));
+        int claimID = Integer.parseInt(DecryptPub.decryptMsg(client, encryptedClaimID));
 
         //check if claim exists
         if (!dataStore.containsKey(claimID)) {
@@ -97,11 +98,15 @@ public class ClaimDataStore {
         }
 
         //check if client is owner of claimId or if client is office
-        if (!retrieveClaim(claimID).getIdClient().contentEquals(client) && !client.substring(0, 8).contentEquals("officer")){
+        if (!retrieveClaim(claimID).getIdClient().contentEquals(client) && !client.substring(0, 7).contentEquals("officer")){
             throw new ClientException("Client does not own this claim.");
         }
 
-        return new String[]{retrieveClaim(claimID).getDocumentContent(docID), retrieveClaim(claimID).getDocumentSignature(docID)};
+        String encryptedDoc = EncryptPub.encryptMsg(client, retrieveClaim(claimID).getDocumentContent(docID));
+
+        String[] docAndSignature = new String[]{encryptedDoc, retrieveClaim(claimID).getDocumentSignature(docID)};
+
+        return docAndSignature;
     }
 
     private Claim retrieveClaim(int id){
@@ -115,13 +120,13 @@ public class ClaimDataStore {
         }
 
         //check if signature is valid
-        String originalMsg = DecryptPriv.decryptMsg(encryptedContent);
+        String originalMsg = DecryptPub.decryptMsg(clientID, encryptedContent);
         if(!VerifySignature.checkSignature(clientID, originalMsg, signature)) {
             throw new Exception("The claim signature is not valid.");
         }
 
         //check if claim belongs to the client or if client is an officer
-        if (!retrieveClaim(claimID).getIdClient().contentEquals(clientID) && !clientID.substring(0, 8).contentEquals("officer")){
+        if (!retrieveClaim(claimID).getIdClient().contentEquals(clientID) && !clientID.substring(0, 7).contentEquals("officer")){
             throw new ClientException("Client does not own this claim.");
         }
 
