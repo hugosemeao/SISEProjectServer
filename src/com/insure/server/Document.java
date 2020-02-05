@@ -15,7 +15,7 @@ public class Document {
         //synchronized to guarantee that document id and date are increasing together
         synchronized (uuidTracker) {
             Date date = new Date();
-            int uuid = uuidTracker.getAndIncrement();
+            this.uuid = uuidTracker.getAndIncrement();
         }
 
         this.signature = signature;

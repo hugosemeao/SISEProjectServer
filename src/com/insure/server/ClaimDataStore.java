@@ -40,7 +40,6 @@ public class ClaimDataStore {
 
     //retrieve claim information
     public String claimToString(String client, String claimID) throws Exception {
-        System.out.println(DecryptPub.decryptMsg(client, claimID));
         int id = Integer.parseInt(DecryptPub.decryptMsg(client, claimID));    //Decrypt claimId
 
         //check if claim exists
