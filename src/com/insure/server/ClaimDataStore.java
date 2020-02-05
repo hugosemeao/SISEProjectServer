@@ -39,10 +39,11 @@ public class ClaimDataStore {
 
     //retrieve claim information
     public String claimToString(String client, String claimID) throws Exception {
-        int id = Integer.getInteger(DecryptPriv.decryptMsg(claimID));    //Decrypt claimId
+        System.out.println(DecryptPub.decryptMsg(client, claimID));
+        int id = Integer.parseInt(DecryptPub.decryptMsg(client, claimID));    //Decrypt claimId
 
         //check if claim exists
-        if (dataStore.containsKey(id)) {
+        if (!dataStore.containsKey(id)) {
             throw new ClientException("Cliam does no exist.");
         }
 
@@ -57,7 +58,7 @@ public class ClaimDataStore {
     // add document to claim
     public int addDocument(String client, int claimID, String encryptedMsg, String signature) throws Exception {
         //check if claim exists
-        if (dataStore.containsKey(claimID)) {
+        if (!dataStore.containsKey(claimID)) {
             throw new ClientException("Cliam does no exist.");
         }
 
@@ -74,7 +75,7 @@ public class ClaimDataStore {
         int claimID = Integer.getInteger(DecryptPub.decryptMsg(client, encryptedClaimID));
 
         //check if claim exists
-        if (dataStore.containsKey(claimID)) {
+        if (!dataStore.containsKey(claimID)) {
             throw new ClientException("Claim does no exist.");
         }
 
@@ -91,7 +92,7 @@ public class ClaimDataStore {
         int claimID = Integer.getInteger(DecryptPub.decryptMsg(client, encryptedClaimID));
 
         //check if claim exists
-        if (dataStore.containsKey(claimID)) {
+        if (!dataStore.containsKey(claimID)) {
             throw new ClientException("Claim does no exist.");
         }
 
@@ -109,7 +110,7 @@ public class ClaimDataStore {
 
     public void editDocument(String clientID, int claimID, int documentID, String encryptedContent, String signature) throws Exception {
         //check if claim exists
-        if (dataStore.containsKey(claimID)) {
+        if (!dataStore.containsKey(claimID)) {
             throw new ClientException("Cliam does no exist.");
         }
 
@@ -119,7 +120,7 @@ public class ClaimDataStore {
             throw new Exception("The claim signature is not valid.");
         }
 
-        //check if claim belongs to the client or if client is an oficer
+        //check if claim belongs to the client or if client is an officer
         if (!retrieveClaim(claimID).getIdClient().contentEquals(clientID) && !clientID.substring(0, 8).contentEquals("officer")){
             throw new ClientException("Client does not own this claim.");
         }

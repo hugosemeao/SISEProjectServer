@@ -1,0 +1,19 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="SISEProjectServer:jar">
+    <output-path>$USER_HOME$/Desktop</output-path>
+    <root id="archive" name="SISEProjectServer.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/src/main/resources/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="module-output" name="SISEProjectServer.main" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/javax.activation.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/webservices-api.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/istack-commons-runtime.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/javax.annotation-api.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/javax.servlet-api.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/webservices-rt.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/jaxb-osgi.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/jaxws-rt.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
