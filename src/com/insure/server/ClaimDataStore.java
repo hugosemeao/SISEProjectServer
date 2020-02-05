@@ -3,10 +3,7 @@ package com.insure.server;
 import com.insure.server.security.DecryptPriv;
 import com.insure.server.security.DecryptPub;
 import com.insure.server.security.VerifySignature;
-import com.sun.xml.registry.uddi.bindings_v2_2.DeleteService;
-
 import javax.jws.WebService;
-import java.security.PublicKey;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -41,54 +38,94 @@ public class ClaimDataStore {
     }
 
     //retrieve claim information
-    public String claimToString(String client, int claimID) throws Exception {
-        DecryptPriv.decryptMsg(claimToString(client, claimID));    //Decrypt claimId
-        try {
-            if (retrieveClaim(claimID).getIdClient().contentEquals(client) || client.substring(0, 8).contentEquals("officer")); //check if client is owner of claimId or if client is office
-        } catch (Exception e) {
-            System.out.println("not officer or client");
+    public String claimToString(String client, String claimID) throws Exception {
+        int id = Integer.getInteger(DecryptPriv.decryptMsg(claimID));    //Decrypt claimId
+
+        //check if claim exists
+        if (dataStore.containsKey(id)) {
+            throw new ClientException("Cliam does no exist.");
         }
-        return retrieveClaim(claimID).toString();
+
+        //check if client is owner of claimId or if client is office
+        if (!retrieveClaim(id).getIdClient().contentEquals(client) && !client.substring(0, 8).contentEquals("officer")){
+            throw new ClientException("Client does not own this claim.");
+        }
+
+        return retrieveClaim(id).toString();
     }
 
     // add document to claim
-    public int addDocument(String client, int claimID, String docContent) throws Exception {
-        //Check Sigature (see createClaim)
-        //ToDo
-        if(!VerifySignature.checkSignature("client")) {   // how do i fockin do dis
+    public int addDocument(String client, int claimID, String encryptedMsg, String signature) throws Exception {
+        //check if claim exists
+        if (dataStore.containsKey(claimID)) {
+            throw new ClientException("Cliam does no exist.");
+        }
+
+        String originalMsg = DecryptPriv.decryptMsg(encryptedMsg);
+        if(!VerifySignature.checkSignature(client, originalMsg, signature)) {
             throw new Exception("The claim signature is not valid.");
         }
-        return retrieveClaim(claimID).addDocument(docContent);
+
+        return retrieveClaim(claimID).addDocument(originalMsg, signature);
     }
 
-    public String listDocuments(String client, int claimID){
+    public String listDocuments(String client, String encryptedClaimID) throws Exception {
         //Decrypt claimId
-        //check if client is owner of claimId or if client is officer
-        //ToDo (see claimToString)
+        int claimID = Integer.getInteger(DecryptPub.decryptMsg(client, encryptedClaimID));
+
+        //check if claim exists
+        if (dataStore.containsKey(claimID)) {
+            throw new ClientException("Claim does no exist.");
+        }
+
+        //check if client is owner of claimId or if client is office
+        if (!retrieveClaim(claimID).getIdClient().contentEquals(client) && !client.substring(0, 8).contentEquals("officer")){
+            throw new ClientException("Client does not own this claim.");
+        }
+
         return retrieveClaim(claimID).documentKeys().toString();
     }
 
-    public String viewDocument(String client, int claimID, int docID){
-        //igual a listDocuments e claimToString
-        //ToDo
-        return retrieveClaim(claimID).getDocumentContent(docID);
+    public String[] viewDocument(String client, String encryptedClaimID, int docID) throws Exception {
+        //Decrypt claimId
+        int claimID = Integer.getInteger(DecryptPub.decryptMsg(client, encryptedClaimID));
+
+        //check if claim exists
+        if (dataStore.containsKey(claimID)) {
+            throw new ClientException("Claim does no exist.");
+        }
+
+        //check if client is owner of claimId or if client is office
+        if (!retrieveClaim(claimID).getIdClient().contentEquals(client) && !client.substring(0, 8).contentEquals("officer")){
+            throw new ClientException("Client does not own this claim.");
+        }
+
+        return new String[]{retrieveClaim(claimID).getDocumentContent(docID), retrieveClaim(claimID).getDocumentSignature(docID)};
     }
 
     private Claim retrieveClaim(int id){
-        //interno, só se usa cá dentro -- apagar comentário
         return dataStore.get(id);
     }
 
-    public void editDocument(String clientID, int ClaimID, int documentID, String newContent){
-        //igual a create claim e addDocumet, i think
-        //ToDo
-        dataStore.get(ClaimID).editDocument(documentID, newContent);
+    public void editDocument(String clientID, int claimID, int documentID, String encryptedContent, String signature) throws Exception {
+        //check if claim exists
+        if (dataStore.containsKey(claimID)) {
+            throw new ClientException("Cliam does no exist.");
+        }
+
+        //check if signature is valid
+        String originalMsg = DecryptPriv.decryptMsg(encryptedContent);
+        if(!VerifySignature.checkSignature(clientID, originalMsg, signature)) {
+            throw new Exception("The claim signature is not valid.");
+        }
+
+        //check if claim belongs to the client or if client is an oficer
+        if (!retrieveClaim(claimID).getIdClient().contentEquals(clientID) && !clientID.substring(0, 8).contentEquals("officer")){
+            throw new ClientException("Client does not own this claim.");
+        }
+
+        dataStore.get(claimID).editDocument(documentID, originalMsg, signature);
     }
 
-    /*
-    public void updateClaim(int id, String newDescription, int clientID){
-        dataStore.replace(id, dataStore.get(id), new Claim(id, newDescription, clientID));
-    }
-    */
 
 }

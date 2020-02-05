@@ -9,13 +9,16 @@ public class Document {
     private String content;
     private Date date;
     private int uuid;
+    private String signature;
 
-    public Document(String content, Claim claim){
+    public Document(String content, String signature, Claim claim){
         //synchronized to guarantee that document id and date are increasing together
         synchronized (uuidTracker) {
             Date date = new Date();
             int uuid = uuidTracker.getAndIncrement();
         }
+
+        this.signature = signature;
         this.content = content;
         this.belongsTo = claim;
         this.uuid = uuid;
@@ -35,9 +38,15 @@ public class Document {
         return this.content;
     }
 
-    public void editDocument(String content){
-        synchronized (this.content) {
+    public String getSignature(){
+        return this.signature;
+    }
+
+    public void editDocument(String content, String signature){
+        //synchronized to prevent from reading the document with the wrong signature
+        synchronized (this) {
             this.content = content;
+            this.signature = signature;
         }
     }
 }

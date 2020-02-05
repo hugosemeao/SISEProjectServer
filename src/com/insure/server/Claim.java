@@ -24,8 +24,8 @@ public class Claim {
         return "Claim ID :"+uuid+"\n Description:  "+ description;
     }
 
-    public int addDocument(String docContent){
-        Document newDoc = new Document(docContent, this);
+    public int addDocument(String docContent, String signature){
+        Document newDoc = new Document(docContent, signature, this);
         int docId =  newDoc.getID();
         docStore.put(docId, newDoc);
 
@@ -36,12 +36,16 @@ public class Claim {
         return docStore.get(docID).getContent();
     }
 
+    public String getDocumentSignature(int docID){
+        return docStore.get(docID).getSignature();
+    }
+
     public Set<Integer> documentKeys(){
         return docStore.keySet();
     }
 
-    public void editDocument(int docID, String newContent){
-        docStore.get(docID).editDocument(newContent);
+    public void editDocument(int docID, String newContent, String signature){
+        docStore.get(docID).editDocument(newContent, signature);
     }
 
     public String getIdClient(){
