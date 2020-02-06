@@ -76,7 +76,7 @@ public class ClaimDataStore {
 
         //check if claim exists
         if (!dataStore.containsKey(claimID)) {
-            throw new ClientException("Claim does no exist.");
+            throw new ClientException("Claim does not exist.");
         }
 
         //check if client is owner of claimId or if client is office
@@ -93,7 +93,7 @@ public class ClaimDataStore {
 
         //check if claim exists
         if (!dataStore.containsKey(claimID)) {
-            throw new ClientException("Claim does no exist.");
+            throw new ClientException("Claim does not exist.");
         }
 
         //check if client is owner of claimId or if client is office
@@ -115,7 +115,7 @@ public class ClaimDataStore {
     public void editDocument(String clientID, int claimID, int documentID, String encryptedContent, String signature) throws Exception {
         //check if claim exists
         if (!dataStore.containsKey(claimID)) {
-            throw new ClientException("Cliam does no exist.");
+            throw new ClientException("Claim does not exist.");
         }
 
         //check if signature is valid
