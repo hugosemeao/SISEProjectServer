@@ -1,5 +1,6 @@
 package com.insure.server;
 
+import javax.swing.*;
 import javax.xml.ws.Endpoint;
 
 public class Main {
@@ -7,8 +8,11 @@ public class Main {
 
         ClaimDataStore claim = new ClaimDataStore();
 
-        Endpoint.publish("http://localhost:8090/docstorage", claim);
+        String ip = JOptionPane.showInputDialog(null,"Please inform the IP to run the server", "localhost");
 
-        System.out.println("Server is running...");
+        if (ip == null){ return; }
+        Endpoint.publish("http://" + ip + ":8090/docstorage", claim);
+
+        System.out.println("\nServer is running...\n");
     }
 }
