@@ -42,7 +42,7 @@ public class DecryptPriv {
 
     public String getDecryptedMsg() throws Exception {
         PrivateKey prvKey = this.getPrivate(Paths.get("").toAbsolutePath() +
-                System.getProperty("file.separator") + "keys/Private/serverPrivateKey");
+                System.getProperty("file.separator") + "keysS/Private/serverPrivateKey");
         return  this.decryptText(this.encryptedMsg, prvKey);
     }
 
