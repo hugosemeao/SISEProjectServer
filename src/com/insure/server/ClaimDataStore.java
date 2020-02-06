@@ -44,7 +44,7 @@ public class ClaimDataStore {
 
         //check if claim exists
         if (!dataStore.containsKey(id)) {
-            throw new ClientException("Claim does no exist.");
+            throw new ClientException("Claim does not exist.");
         }
 
         //check if client is owner of claimId or if client is office
@@ -59,7 +59,7 @@ public class ClaimDataStore {
     public int addDocument(String client, int claimID, String encryptedMsg, String signature) throws Exception {
         //check if claim exists
         if (!dataStore.containsKey(claimID)) {
-            throw new ClientException("Claim does no exist.");
+            throw new ClientException("Claim does not exist.");
         }
 
         String originalMsg = DecryptPub.decryptMsg(client, encryptedMsg);
@@ -103,7 +103,7 @@ public class ClaimDataStore {
 
         String encryptedDoc = EncryptPub.encryptMsg(client, retrieveClaim(claimID).getDocumentContent(docID));
 
-        String[] docAndSignature = new String[]{encryptedDoc, retrieveClaim(claimID).getDocumentSignature(docID)};
+        String[] docAndSignature = new String[]{encryptedDoc, retrieveClaim(claimID).getDocumentSignature(docID), retrieveClaim(claimID).getDocDate(docID)};
 
         return docAndSignature;
     }

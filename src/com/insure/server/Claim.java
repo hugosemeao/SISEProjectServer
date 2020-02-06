@@ -54,4 +54,7 @@ public class Claim {
         return this.idClient;
     }
 
+    public String getDocDate(int docID){
+        return  docStore.get(docID).getDate();
+    }
 }

@@ -10,7 +10,7 @@ public class Document {
     private String signature;
 
     public Document(String content, String signature, Claim claim, int uuid){
-        Date date = new Date();
+        this.date = new Date();
         this.uuid = uuid;
         this.signature = signature;
         this.content = content;
@@ -21,10 +21,12 @@ public class Document {
         return  this.uuid;
     }
 
+    public String getDate(){
+        return this.date.toString();
+    }
+
     public String getContent(){
-        return "Doc ID: " + this.uuid +
-                "\n Added date :" + this.date.toString() +
-                "\n Content :" + this.content;
+        return this.content;
     }
 
     public String getSignature(){
