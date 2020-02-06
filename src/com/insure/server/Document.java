@@ -22,14 +22,10 @@ public class Document {
         return  this.uuid;
     }
 
-    public String documentToString(){
+    public String getContent(){
         return "Doc ID: " + this.uuid +
                 "\nDate :" + this.date.toString() +
                 "\nContent :" + this.content;
-    }
-
-    public String getContent(){
-        return this.content;
     }
 
     public String getSignature(){
