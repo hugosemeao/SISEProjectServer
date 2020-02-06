@@ -24,8 +24,8 @@ public class Document {
 
     public String getContent(){
         return "Doc ID: " + this.uuid +
-                "\nAdded date :" + this.date.toString() +
-                "\nContent :" + this.content;
+                "\n Added date :" + this.date.toString() +
+                "\n Content :" + this.content;
     }
 
     public String getSignature(){
