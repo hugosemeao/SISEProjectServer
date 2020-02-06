@@ -84,6 +84,7 @@ public class ClaimDataStore {
             throw new ClientException("Client does not own this claim.");
         }
 
+        //returns a list of document IDs
         return retrieveClaim(claimID).documentKeys().toString();
     }
 
