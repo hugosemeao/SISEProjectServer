@@ -1,7 +1,6 @@
 package com.insure.server;
 
 import java.util.Date;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class Document {
     private Claim belongsTo;

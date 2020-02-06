@@ -11,8 +11,6 @@ import java.nio.file.Paths;
 import java.security.*;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
-import java.util.Scanner;
-
 
 public class DecryptPub {
     private Cipher cipher;
