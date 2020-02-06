@@ -10,6 +10,7 @@ public class Claim {
     private ConcurrentHashMap<Integer, Document> docStore; //documents of this claim
     private AtomicInteger docId; //claim id tracker
     private final String idClient; //claim owner id
+    private AtomicInteger docTracker = new AtomicInteger(1);
 
 
     public Claim(int id, String description, String idClient){
@@ -25,11 +26,12 @@ public class Claim {
     }
 
     public int addDocument(String docContent, String signature){
-        Document newDoc = new Document(docContent, signature, this);
-        int docId =  newDoc.getID();
-        docStore.put(docId, newDoc);
-
-        return docId;
+        synchronized (docTracker) {
+            Document newDoc = new Document(docContent, signature, this, docTracker.getAndIncrement());
+            int docId = newDoc.getID();
+            docStore.put(docId, newDoc);
+            return docId;
+        }
     }
 
     public String getDocumentContent(int docID){
