@@ -24,7 +24,7 @@ public class Document {
 
     public String getContent(){
         return "Doc ID: " + this.uuid +
-                "\nDate :" + this.date.toString() +
+                "\nAdded date :" + this.date.toString() +
                 "\nContent :" + this.content;
     }
 
