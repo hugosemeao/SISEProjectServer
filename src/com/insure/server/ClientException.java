@@ -1,7 +1,14 @@
 package com.insure.server;
 
 public class ClientException extends Exception {
-    public ClientException(String message) {
+    private String message;
 
+    public ClientException(String message) {
+        this.message = message;
+    }
+
+    @Override
+    public String getMessage(){
+        return this.message;
     }
 }

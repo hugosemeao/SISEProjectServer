@@ -22,12 +22,12 @@ public class ClaimDataStore {
     //create claim
     public int createClaim(String client, String encryptedDescription, String signature) throws Exception {
         if(!client.substring(0,7).contentEquals("insured")){
-            throw new Exception("Only a insured can create a claim.");
+            throw new ClientException("Only a insured can create a claim.");
         }
 
         String originalMsg = DecryptPriv.decryptMsg(encryptedDescription);
         if(!VerifySignature.checkSignature(client, originalMsg, signature)){
-            throw new Exception("The claim signature is not valid.");
+            throw new ClientException("The claim signature is not valid.");
         }
 
         int uuid = uuidTracker.getAndIncrement();
@@ -44,7 +44,7 @@ public class ClaimDataStore {
 
         //check if claim exists
         if (!dataStore.containsKey(id)) {
-            throw new ClientException("Cliam does no exist.");
+            throw new ClientException("Claim does no exist.");
         }
 
         //check if client is owner of claimId or if client is office
@@ -59,12 +59,12 @@ public class ClaimDataStore {
     public int addDocument(String client, int claimID, String encryptedMsg, String signature) throws Exception {
         //check if claim exists
         if (!dataStore.containsKey(claimID)) {
-            throw new ClientException("Cliam does no exist.");
+            throw new ClientException("Claim does no exist.");
         }
 
         String originalMsg = DecryptPub.decryptMsg(client, encryptedMsg);
         if(!VerifySignature.checkSignature(client, originalMsg, signature)) {
-            throw new Exception("The claim signature is not valid.");
+            throw new ClientException("The claim signature is not valid.");
         }
 
         return retrieveClaim(claimID).addDocument(originalMsg, signature);
@@ -84,7 +84,6 @@ public class ClaimDataStore {
             throw new ClientException("Client does not own this claim.");
         }
 
-        //returns a list of document IDs
         return retrieveClaim(claimID).documentKeys().toString();
     }
 
@@ -122,7 +121,7 @@ public class ClaimDataStore {
         //check if signature is valid
         String originalMsg = DecryptPub.decryptMsg(clientID, encryptedContent);
         if(!VerifySignature.checkSignature(clientID, originalMsg, signature)) {
-            throw new Exception("The claim signature is not valid.");
+            throw new ClientException("The claim signature is not valid.");
         }
 
         //check if claim belongs to the client or if client is an officer
